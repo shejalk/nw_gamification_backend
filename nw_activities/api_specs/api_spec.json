@@ -1,0 +1,166 @@
+{
+  "swagger": "2.0",
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/nw_activities/",
+  "info": {
+    "version": "1.0.0",
+    "title": "Simple API",
+    "description": "A simple API to learn how to write OpenAPI Specification"
+  },
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "oauth": {
+      "tokenUrl": "http://auth.ibtspl.com/oauth2/",
+      "flow": "password",
+      "scopes": {
+        "read": "read users",
+        "write": "create users",
+        "update": "update users",
+        "delete": "delete users"
+      },
+      "type": "oauth2"
+    }
+  },
+  "security": [],
+  "definitions": {
+  },
+  "parameters": {
+    "StreakFreezeParameter": {
+      "name": "StreakFreezeParameter",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "freeze_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "SuccessResponse": {
+      "description": "success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "STREAK_FREEZED_SUCCESSFULLY",
+              "STREAK_FREEZE_CANCELLED_SUCCESSFULLY"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    },
+    "StreakFreezeFailureResponse": {
+      "description": "failure response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          },
+          "http_status_code": {
+            "type": "integer"
+          },
+          "res_status": {
+            "type": "string",
+            "enum": [
+              "MONTHLY_FREEZE_LIMIT_EXCEEDED",
+              "INSUFFICIENT_FREEZE_BALANCE",
+              "STREAK_FREEZE_ALREADY_EXISTS",
+              "STREAK_FREEZE_NOT_FOUND"
+            ]
+          }
+        },
+        "required": [
+          "response",
+          "http_status_code",
+          "res_status"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/user/streak/freeze/create/v1/": {
+      "post": {
+        "summary": "Freeze Streak",
+        "description": "Freeze Streak",
+        "operationId": "create_streak_freeze_v1",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/StreakFreezeParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/StreakFreezeFailureResponse"
+          }
+        }
+      }
+    },
+    "/user/streak/freeze/cancel/v1/": {
+      "post": {
+        "summary": "Unfreeze Streak",
+        "description": "Unfreeze Streak",
+        "operationId": "cancel_streak_freeze_v1",
+        "security": [
+          {
+            "oauth": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/StreakFreezeParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/SuccessResponse"
+          },
+          "400": {
+            "$ref": "#/responses/StreakFreezeFailureResponse"
+          }
+        }
+      }
+    }
+  }
+}
+    
